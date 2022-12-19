@@ -19,7 +19,8 @@ Take a look at the **ERD OR SQL** templates in the ERD folder and check how init
 ### INSTRUCTIONS
 
     1. Make sure postgres is running and able to connect.
-    2. Run terminal in directory : /backend then:
+    2. Change the PostgreSQL Password and User in appsettings.
+    3. Run terminal in directory : /backend then:
         ```
         dotnet restore
         ```
