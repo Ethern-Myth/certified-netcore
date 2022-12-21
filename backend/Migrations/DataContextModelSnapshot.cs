@@ -68,9 +68,9 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            CustomerID = new Guid("ee66c20e-d5fe-4661-aa76-2a3b577fd868"),
-                            DateAdded = new DateTimeOffset(new DateTime(2022, 12, 21, 13, 49, 3, 996, DateTimeKind.Unspecified).AddTicks(7547), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2022, 12, 21, 13, 49, 3, 996, DateTimeKind.Unspecified).AddTicks(7552), new TimeSpan(0, 0, 0, 0, 0)),
+                            CustomerID = new Guid("b0a8a448-272a-4e92-9509-e43b963e9395"),
+                            DateAdded = new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3105), new TimeSpan(0, 0, 0, 0, 0)),
+                            DateUpdated = new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3109), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "john@mail.com",
                             Name = "John",
                             Password = "doe100",
@@ -1407,14 +1407,9 @@ namespace backend.Migrations
                     b.Property<double>("OrderTotal")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("ShippingID")
-                        .HasColumnType("integer");
-
                     b.HasKey("OrderID");
 
                     b.HasIndex("CCID");
-
-                    b.HasIndex("ShippingID");
 
                     b.ToTable("order");
                 });
@@ -1438,6 +1433,12 @@ namespace backend.Migrations
                     b.Property<string>("Desc")
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
                     b.Property<bool>("InStock")
                         .HasColumnType("boolean");
 
@@ -1450,9 +1451,6 @@ namespace backend.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
-
-                    b.Property<string>("ProductImgPath")
-                        .HasColumnType("text");
 
                     b.HasKey("ProductID");
 
@@ -1534,6 +1532,9 @@ namespace backend.Migrations
                     b.Property<string>("AddressLine2")
                         .HasColumnType("text");
 
+                    b.Property<Guid>("CustomerID")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1554,6 +1555,8 @@ namespace backend.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("ShippingID");
+
+                    b.HasIndex("CustomerID");
 
                     b.HasIndex("Name");
 
@@ -1620,15 +1623,7 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("backend.models.models.Shipping", "Shipping")
-                        .WithMany()
-                        .HasForeignKey("ShippingID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CustomerCollection");
-
-                    b.Navigation("Shipping");
                 });
 
             modelBuilder.Entity("backend.models.models.Product", b =>
@@ -1644,6 +1639,12 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.models.models.Shipping", b =>
                 {
+                    b.HasOne("backend.models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("backend.models.models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("Name")
@@ -1651,6 +1652,8 @@ namespace backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Country");
+
+                    b.Navigation("Customer");
                 });
 #pragma warning restore 612, 618
         }

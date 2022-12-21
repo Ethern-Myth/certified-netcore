@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.interfaces;
+using backend.models;
 using backend.models.models;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,22 @@ public class OrderService : IOrderService
     public Task<CustomerCollection> getCollection(Guid id) =>
         context.CustomerCollections
         .AsNoTracking()
+        .Include(cc => cc.CustomerProduct)
         .FirstAsync(cc => cc.CCID == id);
+
+
+    public Task<Shipping> getShippingAddress(Guid id) =>
+        context.Shippings
+        .Where(s => s.Name == s.Country.Name)
+        .Include(s => s.Country)
+        .AsNoTracking()
+        .FirstAsync(s => s.CustomerID == id);
+
+    public Task<Customer> getCustomer(Guid id) =>
+       context.Customers
+       .Where(c => c.RoleID == c.Roles.RoleID)
+       .Include(c => c.Roles)
+       .FirstOrDefaultAsync(c => c.CustomerID == id);
 
     public async Task postRequest(Order t)
     {

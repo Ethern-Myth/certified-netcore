@@ -44,7 +44,7 @@ public class CustomerCollectionController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:Guid}")]
+    [HttpPut("{id:Guid}")]
     public async Task<IActionResult> UpdateCustomerCollection(CustomerCollectionRequest request, Guid id)
     {
         dynamic response;
@@ -61,7 +61,7 @@ public class CustomerCollectionController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:Guid}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveCustomerCollection(Guid id)
     {
         await service.deleteRequest(id, 0);

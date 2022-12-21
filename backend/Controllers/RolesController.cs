@@ -44,7 +44,7 @@ public class RolesController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:int}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateRole(RoleRequest request, int id)
     {
         dynamic response;
@@ -60,7 +60,7 @@ public class RolesController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> RemoveRole(int id)
     {
         await service.deleteRequest(guid, id);

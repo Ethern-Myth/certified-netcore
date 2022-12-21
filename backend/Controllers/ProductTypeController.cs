@@ -44,7 +44,7 @@ public class ProductTypeController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:int}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProductType(ProductTypeRequest request, int id)
     {
         dynamic response;
@@ -60,7 +60,7 @@ public class ProductTypeController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> RemoveProductType(int id)
     {
         await service.deleteRequest(guid, id);

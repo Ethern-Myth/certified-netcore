@@ -1,5 +1,6 @@
 using backend.interfaces;
 using backend.models;
+using backend.models.models;
 using backend.models.requests;
 using backend.models.responses;
 using Microsoft.AspNetCore.Authorization;
@@ -45,7 +46,7 @@ public class CustomerController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:Guid}")]
+    [HttpPut("{id:Guid}")]
     public async Task<IActionResult> UpdateCustomer(CustomerRequest request, Guid id)
     {
         dynamic response;
@@ -63,7 +64,7 @@ public class CustomerController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:Guid}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveCustomer(Guid id)
     {
         await service.deleteRequest(id, 0);
@@ -86,7 +87,7 @@ public class CustomerController : ControllerBase
     [NonAction]
     private async new Task<FullCustomerResponse> Response(Customer customer)
     {
-        var roles = await service.GetRoles(customer.RoleID);
+
         try
         {
             return new FullCustomerResponse(
@@ -95,7 +96,10 @@ public class CustomerController : ControllerBase
                 customer.Surname,
                 customer.Email,
                 customer.Phone,
-                roles,
+                 new Roles(
+                    customer.Roles.RoleID,
+                    customer.Roles.Name
+                ),
                 customer.Status
             );
         }
@@ -113,14 +117,16 @@ public class CustomerController : ControllerBase
             var results = new List<FullCustomerResponse>();
             foreach (var item in customers)
             {
-                var roles = await service.GetRoles(item.RoleID);
                 results.Add(new FullCustomerResponse(
                 item.CustomerID,
                 item.Name,
                 item.Surname,
                 item.Email,
                 item.Phone,
-                roles,
+                new Roles(
+                    item.Roles.RoleID,
+                    item.Roles.Name
+                ),
                 item.Status
                 ));
             }

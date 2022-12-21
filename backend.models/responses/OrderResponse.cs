@@ -1,5 +1,4 @@
 using backend.models.response;
-
 namespace backend.models.responses;
 public record OrderResponse
 {
@@ -7,23 +6,22 @@ public record OrderResponse
     public DateTimeOffset OrderDate { get; }
     public double OrderTotal { get; }
     public bool IsPaid { get; }
-    public Guid CCID { get; }
-    public PartialCustomerCollectionResponse customerCollectionResponse { get; }
+    public ShippingResponse ShippingResponse { get; }
+    public OnlyProductsResponse OnlyProductsResponse { get; set; }
     public OrderResponse() { }
     public OrderResponse(
         Guid orderID,
         DateTimeOffset orderDate,
         double orderTotal,
         bool isPaid,
-        Guid cCID,
-        PartialCustomerCollectionResponse customerCollectionResponse)
+        ShippingResponse shippingResponse,
+        OnlyProductsResponse onlyProductsResponse)
     {
         OrderID = orderID;
         OrderDate = orderDate;
         OrderTotal = orderTotal;
         IsPaid = isPaid;
-        CCID = cCID;
-        this.customerCollectionResponse = customerCollectionResponse;
+        ShippingResponse = shippingResponse;
+        OnlyProductsResponse = onlyProductsResponse;
     }
-
 }

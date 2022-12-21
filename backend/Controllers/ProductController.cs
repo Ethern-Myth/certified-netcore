@@ -13,6 +13,7 @@ namespace backend.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductService service;
+    private string folderPath = Path.Combine("Resources", "Images");
 
     public ProductController(IProductService service) =>
         this.service = service;
@@ -35,7 +36,7 @@ public class ProductController : ControllerBase
         {
             var product = await RequestProduct(request);
             await service.postRequest(product);
-            await SaveImage(request.Image, product.ProductImgPath);
+            await SaveImage(request.Image, product.ImageName);
             response = await ServerResponse(product);
         }
         else
@@ -46,7 +47,7 @@ public class ProductController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:Guid}")]
+    [HttpPut("{id:Guid}")]
     public async Task<IActionResult> UpdateProduct([FromForm] ProductRequest request, Guid id)
     {
         dynamic response;
@@ -57,7 +58,7 @@ public class ProductController : ControllerBase
             product.ProductID = id;
             product.DateUpdated = DateTimeOffset.UtcNow;
             await service.putRequest(product, id, 0);
-            await UpdateImage(request.Image, oldFile.ProductImgPath, product.ProductImgPath);
+            await UpdateImage(request.Image, oldFile.ImageName, product.ImageName);
             response = await ServerResponse(product);
         }
         else
@@ -65,7 +66,7 @@ public class ProductController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:Guid}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveProduct(Guid id)
     {
         await DeleteImage(id);
@@ -76,7 +77,8 @@ public class ProductController : ControllerBase
     [NonAction]
     private new async Task<Product> RequestProduct(ProductRequest request)
     {
-        var imagePath = await ImagePath(request.Image);
+        var imageName = await ImagePath(request.Image);
+        var imageUrl = ImageUrl(imageName);
         return await Task.Run(() => new Product(
             request.Name,
             request.Description,
@@ -84,14 +86,14 @@ public class ProductController : ControllerBase
             request.Price,
             request.InStock,
             request.PDTypeID,
-            imagePath
+            imageName,
+            imageUrl
             ));
     }
 
     [NonAction]
     private new async Task<ProductResponse> ServerResponse(Product product)
     {
-        var baseUrl = $"{Request.Scheme}://{Request.Host}/";
         try
         {
             var productType = await service.GetProductTypes(product.PDTypeID);
@@ -103,7 +105,8 @@ public class ProductController : ControllerBase
                 product.Price,
                 product.InStock,
                 productType,
-                Path.Combine(baseUrl, product.ProductImgPath)
+                product.ImageName,
+                product.ImageUrl
             );
         }
         catch
@@ -115,7 +118,7 @@ public class ProductController : ControllerBase
     [NonAction]
     private new async Task<List<ProductResponse>> ServerResponse(List<Product> products)
     {
-        var baseUrl = $"{Request.Scheme}://{Request.Host}/";
+
         var results = new List<ProductResponse>();
         try
         {
@@ -134,7 +137,8 @@ public class ProductController : ControllerBase
                         productType.PDTypeID,
                         productType.Category
                     ),
-                    Path.Combine(baseUrl, item.ProductImgPath)
+                    item.ImageName,
+                    item.ImageUrl
                 )
             );
             }
@@ -149,16 +153,14 @@ public class ProductController : ControllerBase
     [NonAction]
     private async Task<string> ImagePath(IFormFile file)
     {
-        string path = "";
         string fileName = "";
         if (file.Length > 0)
         {
             fileName = file.FileName;
-            path = Path.Combine("Resources", "Images");
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
             string extension = Path.GetExtension(file.FileName);
-            DirectoryInfo dir = new DirectoryInfo(path);
+            DirectoryInfo dir = new DirectoryInfo(folderPath);
             FileInfo[] files = dir.GetFiles(fileName, SearchOption.TopDirectoryOnly);
             foreach (var item in files)
             {
@@ -168,19 +170,26 @@ public class ProductController : ControllerBase
                     break;
                 }
             }
-            path = Path.Combine(path, fileName);
         }
-        return path;
+        return fileName;
     }
 
     [NonAction]
-    private async Task SaveImage(IFormFile file, string imagePath)
+    private new string ImageUrl(string fileName)
+    {
+        var baseUrl = $"{Request.Scheme}://{Request.Host}/";
+        return Path.Combine(baseUrl, folderPath, fileName);
+    }
+
+    [NonAction]
+    private async Task SaveImage(IFormFile file, string imageName)
     {
         try
         {
             if (file.Length > 0)
             {
-                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                var path = Path.Combine(folderPath, imageName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
@@ -193,16 +202,18 @@ public class ProductController : ControllerBase
     }
 
     [NonAction]
-    private async Task UpdateImage(IFormFile file, string oldFile, string imagePath)
+    private async Task UpdateImage(IFormFile file, string oldFile, string imageName)
     {
         try
         {
             if (file.Length > 0)
             {
-                FileInfo fileInfo = new FileInfo(oldFile);
+                string fileToDelete = Path.Combine(folderPath, oldFile);
+                FileInfo fileInfo = new FileInfo(fileToDelete);
                 if (fileInfo.Exists)
                     fileInfo.Delete();
-                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                var path = Path.Combine(folderPath, imageName);
+                using (var fileStream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(fileStream);
                 }
@@ -218,7 +229,7 @@ public class ProductController : ControllerBase
     private async Task DeleteImage(Guid id)
     {
         var product = await service.getSingleResponse(id, 0);
-        var fileToDelete = product.ProductImgPath;
+        var fileToDelete = Path.Combine(folderPath, product.ImageName);
         FileInfo fileInfo = new FileInfo(fileToDelete);
         if (fileInfo.Exists)
             fileInfo.Delete();

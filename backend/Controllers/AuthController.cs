@@ -100,7 +100,6 @@ public class AuthController : ControllerBase
     [NonAction]
     private async new Task<FullCustomerResponse> Response(Customer customer)
     {
-        var roles = await service.GetRoles(customer.RoleID);
         try
         {
             return new FullCustomerResponse(
@@ -109,7 +108,7 @@ public class AuthController : ControllerBase
                 customer.Surname,
                 customer.Email,
                 customer.Phone,
-                roles,
+                customer.Roles,
                 customer.Status
             );
         }

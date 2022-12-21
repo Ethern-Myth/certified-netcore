@@ -44,3 +44,19 @@ public record PartialCustomerProductResponse
         Subtotal = subtotal;
     }
 }
+
+public class OnlyProductsResponse
+{
+    public ICollection<ProductQuantityResponse> Products { get; }
+    public double Subtotal { get; }
+    public OnlyProductsResponse() { }
+
+    public OnlyProductsResponse(
+        ICollection<ProductQuantityResponse> products,
+        double subtotal)
+    {
+        Products = products;
+        Subtotal = subtotal;
+    }
+}
+

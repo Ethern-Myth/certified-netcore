@@ -8,6 +8,11 @@ public class Shipping
 {
     [Key]
     public int ShippingID { get; set; }
+
+    [ForeignKey(nameof(Customer))]
+    public Guid CustomerID { get; set; }
+    public virtual Customer Customer { get; set; }
+
     [Required]
     public string AddressLine1 { get; set; }
     public string? AddressLine2 { get; set; }
@@ -23,6 +28,7 @@ public class Shipping
     public string Name { get; set; }
     public virtual Country Country { get; set; }
     public Shipping(
+        Guid customerID,
         string addressLine1,
         string? addressLine2,
         string suburb,
@@ -31,6 +37,7 @@ public class Shipping
         int postalCode,
         string name)
     {
+        CustomerID = customerID;
         AddressLine1 = addressLine1;
         AddressLine2 = addressLine2;
         Suburb = suburb;

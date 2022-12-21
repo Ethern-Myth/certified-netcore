@@ -20,10 +20,6 @@ public class Order : BaseModel
     [ForeignKey(nameof(CustomerCollection))]
     public Guid CCID { get; set; }
     public virtual CustomerCollection CustomerCollection { get; set; }
-
-    [ForeignKey(nameof(Shipping))]
-    public int ShippingID { get; set; }
-    public virtual Shipping Shipping { get; set; }
     public Order(
         Guid cCID,
         bool isPaid)

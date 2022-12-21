@@ -11,7 +11,8 @@ public record ProductResponse
     public double Price { get; }
     public bool InStock { get; set; }
     public ProductType ProductType { get; set; }
-    public string ProductImgPath { get; set; }
+    public string ImageName { get; set; }
+    public string ImageUrl { get; set; }
 
     public ProductResponse() { }
 
@@ -23,7 +24,8 @@ public record ProductResponse
         double price,
         bool inStock,
         ProductType productType,
-        string productImgPath)
+        string imageName,
+        string imageUrl)
     {
         ProductID = productID;
         Name = name;
@@ -32,6 +34,7 @@ public record ProductResponse
         Price = price;
         InStock = inStock;
         ProductType = productType;
-        ProductImgPath = productImgPath;
+        ImageName = imageName;
+        ImageUrl = imageUrl;
     }
 }

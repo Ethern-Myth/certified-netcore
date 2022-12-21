@@ -43,7 +43,7 @@ public class CustomerProductController : ControllerBase
             value: response);
     }
 
-    [HttpPut("Update/{id:Guid}")]
+    [HttpPut("{id:Guid}")]
     public async Task<IActionResult> UpdateCustomerProduct(CustomerProductRequest request, Guid id)
     {
         dynamic response;
@@ -60,7 +60,7 @@ public class CustomerProductController : ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("Delete/{id:Guid}")]
+    [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveCustomerProduct(Guid id)
     {
         await service.deleteRequest(id, 0);

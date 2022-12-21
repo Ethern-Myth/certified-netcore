@@ -53,31 +53,6 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "shipping",
-                columns: table => new
-                {
-                    ShippingID = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AddressLine1 = table.Column<string>(type: "text", nullable: false),
-                    AddressLine2 = table.Column<string>(type: "text", nullable: true),
-                    Suburb = table.Column<string>(type: "text", nullable: false),
-                    Town = table.Column<string>(type: "text", nullable: false),
-                    Region = table.Column<string>(type: "text", nullable: false),
-                    PostalCode = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_shipping", x => x.ShippingID);
-                    table.ForeignKey(
-                        name: "FK_shipping_Countries_Name",
-                        column: x => x.Name,
-                        principalTable: "Countries",
-                        principalColumn: "Name",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "product",
                 columns: table => new
                 {
@@ -88,7 +63,8 @@ namespace backend.Migrations
                     Price = table.Column<double>(type: "double precision", nullable: false),
                     InStock = table.Column<bool>(type: "boolean", nullable: false),
                     PDTypeID = table.Column<int>(type: "integer", nullable: false),
-                    ProductImgPath = table.Column<string>(type: "text", nullable: true),
+                    ImageName = table.Column<string>(type: "text", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
                     DateAdded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DateUpdated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
@@ -152,6 +128,38 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "shipping",
+                columns: table => new
+                {
+                    ShippingID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerID = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddressLine1 = table.Column<string>(type: "text", nullable: false),
+                    AddressLine2 = table.Column<string>(type: "text", nullable: true),
+                    Suburb = table.Column<string>(type: "text", nullable: false),
+                    Town = table.Column<string>(type: "text", nullable: false),
+                    Region = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_shipping", x => x.ShippingID);
+                    table.ForeignKey(
+                        name: "FK_shipping_Countries_Name",
+                        column: x => x.Name,
+                        principalTable: "Countries",
+                        principalColumn: "Name",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_shipping_customer_CustomerID",
+                        column: x => x.CustomerID,
+                        principalTable: "customer",
+                        principalColumn: "CustomerID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "customer_collection",
                 columns: table => new
                 {
@@ -188,7 +196,6 @@ namespace backend.Migrations
                     OrderTotal = table.Column<double>(type: "double precision", nullable: false),
                     IsPaid = table.Column<bool>(type: "boolean", nullable: false),
                     CCID = table.Column<Guid>(type: "uuid", nullable: false),
-                    ShippingID = table.Column<int>(type: "integer", nullable: false),
                     DateAdded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DateUpdated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
@@ -200,12 +207,6 @@ namespace backend.Migrations
                         column: x => x.CCID,
                         principalTable: "customer_collection",
                         principalColumn: "CCID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_order_shipping_ShippingID",
-                        column: x => x.ShippingID,
-                        principalTable: "shipping",
-                        principalColumn: "ShippingID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -498,7 +499,7 @@ namespace backend.Migrations
             migrationBuilder.InsertData(
                 table: "customer",
                 columns: new[] { "CustomerID", "DateAdded", "DateUpdated", "Email", "Name", "Password", "Phone", "RoleID", "Status", "Surname" },
-                values: new object[] { new Guid("ee66c20e-d5fe-4661-aa76-2a3b577fd868"), new DateTimeOffset(new DateTime(2022, 12, 21, 13, 49, 3, 996, DateTimeKind.Unspecified).AddTicks(7547), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2022, 12, 21, 13, 49, 3, 996, DateTimeKind.Unspecified).AddTicks(7552), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
+                values: new object[] { new Guid("b0a8a448-272a-4e92-9509-e43b963e9395"), new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3105), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3109), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_customer_RoleID",
@@ -526,14 +527,14 @@ namespace backend.Migrations
                 column: "CCID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_order_ShippingID",
-                table: "order",
-                column: "ShippingID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_product_PDTypeID",
                 table: "product",
                 column: "PDTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_shipping_CustomerID",
+                table: "shipping",
+                column: "CustomerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_shipping_Name",
@@ -551,22 +552,22 @@ namespace backend.Migrations
                 name: "product");
 
             migrationBuilder.DropTable(
+                name: "shipping");
+
+            migrationBuilder.DropTable(
                 name: "order");
 
             migrationBuilder.DropTable(
                 name: "product_type");
 
             migrationBuilder.DropTable(
+                name: "Countries");
+
+            migrationBuilder.DropTable(
                 name: "customer_collection");
 
             migrationBuilder.DropTable(
-                name: "shipping");
-
-            migrationBuilder.DropTable(
                 name: "customer_product");
-
-            migrationBuilder.DropTable(
-                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "customer");

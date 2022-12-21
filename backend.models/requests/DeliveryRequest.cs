@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+
 namespace backend.models.requests;
-public struct OrderRequest
+
+public struct DeliveryRequest
 {
     [Required]
-    public Guid CCID { get; set; }
+    public Guid OrderID { get; set; }
     [Required]
-    public bool IsPaid { get; set; }
+    public bool IsDelivered { get; set; }
 }

@@ -27,11 +27,6 @@ public class CustomerService : ICustomerService
             predicate: c =>
             c.Email == email && c.Password == password);
 
-    public Task<Roles?> GetRoles(int id) =>
-        context.Roles
-        .FirstOrDefaultAsync(r => r.RoleID == id);
-
-
     public Task<List<Customer>> getResponse() =>
         context.Customers
         .Where(c => c.RoleID == c.Roles.RoleID)

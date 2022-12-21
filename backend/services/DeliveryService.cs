@@ -12,31 +12,37 @@ public class DeliveryService : IDeliveryService
     public DeliveryService(DataContext context) =>
         this.context = context;
 
-    public Task deleteRequest(Guid? id, int? intId)
+    public async Task deleteRequest(Guid? id, int? intId)
     {
-        throw new NotImplementedException();
+        var response = context.Deliveries.Single(d => d.OrderID == id);
+        context.ChangeTracker.Clear();
+        context.Remove(response);
+        await context.SaveChangesAsync();
     }
 
     public Task<List<Delivery>> getResponse() =>
         context.Deliveries.ToListAsync();
 
-    public Task<List<Delivery>> getResponse(Guid? id, int? intId)
+    public Task<Delivery?> getSingleResponse(Guid? id, int? intId) =>
+        context.Deliveries.FirstOrDefaultAsync(d => d.OrderID == id);
+
+    public async Task postRequest(Delivery t)
     {
-        throw new NotImplementedException();
+        context.ChangeTracker.Clear();
+        await context.AddAsync(t);
+        await context.SaveChangesAsync();
     }
 
-    public Task<Delivery?> getSingleResponse(Guid? id, int? intId)
+    public async Task putRequest(Delivery t, Guid? id, int? intId)
     {
-        throw new NotImplementedException();
+        context.ChangeTracker.Clear();
+        if (context.Deliveries.Any(d => d.OrderID == id))
+        {
+            await Task.Run(() => context.Update(t));
+        }
+        await context.SaveChangesAsync();
     }
+    public Task<List<Delivery>> getResponse(Guid? id, int? intId) =>
+        throw new NotImplementedException();
 
-    public Task postRequest(Delivery t)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task putRequest(Delivery t, Guid? id, int? intId)
-    {
-        throw new NotImplementedException();
-    }
 }

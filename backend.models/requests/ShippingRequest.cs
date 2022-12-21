@@ -5,6 +5,8 @@ namespace backend.models.requests;
 public struct ShippingRequest
 {
     [Required]
+    public Guid CustomerID { get; set; }
+    [Required]
     public string AddressLine1 { get; set; }
     public string? AddressLine2 { get; set; }
     [Required]

@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -472,
-    "scrollLeft": -1014,
-    "zoomLevel": 0.9,
+    "scrollTop": 0,
+    "scrollLeft": 0,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": false,
@@ -505,7 +505,7 @@
           "active": false,
           "left": 782.689,
           "top": 573.6388,
-          "zIndex": 6,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 97.43309020996094
         },
@@ -561,29 +561,6 @@
               "widthDefault": 60
             },
             "id": "5de8cd4b-bb17-4281-9d04-1737b2745f38"
-          },
-          {
-            "name": "ShippingID",
-            "comment": "",
-            "dataType": "int",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": true,
-              "pfk": false,
-              "widthName": 69.79507446289062,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "e082e11b-9475-4017-89d6-d246bcdde22b"
           },
           {
             "name": "OrderDate",
@@ -728,7 +705,7 @@
           "active": false,
           "left": 1568.218,
           "top": 196.7737,
-          "zIndex": 5,
+          "zIndex": 10,
           "widthName": 60,
           "widthComment": 73.50007629394531
         },
@@ -967,7 +944,7 @@
           "active": false,
           "left": 775.8473,
           "top": 260.8884,
-          "zIndex": 8,
+          "zIndex": 7,
           "widthName": 113.61811828613281,
           "widthComment": 120
         },
@@ -1121,7 +1098,7 @@
           "active": false,
           "left": 1278.2611,
           "top": 544.3612,
-          "zIndex": 7,
+          "zIndex": 6,
           "widthName": 124.01811218261719,
           "widthComment": 120
         },
@@ -1468,7 +1445,7 @@
           "active": false,
           "left": 1532.833,
           "top": 740.9455,
-          "zIndex": 9,
+          "zIndex": 8,
           "widthName": 101.00810241699219,
           "widthComment": 120
         },
@@ -1530,7 +1507,7 @@
           "active": false,
           "left": 780.6125,
           "top": 865.8047,
-          "zIndex": 10,
+          "zIndex": 9,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1754,8 +1731,8 @@
           "columnIds": [
             "5de8cd4b-bb17-4281-9d04-1737b2745f38"
           ],
-          "x": 1657.3580413513184,
-          "y": 450.27369999999996,
+          "x": 1746.4980827026368,
+          "y": 429.77369999999996,
           "direction": "bottom"
         },
         "constraintName": "fk_customer_collection_to_order",
@@ -1798,7 +1775,7 @@
             "3a4e0629-407f-4a3d-861d-243dead9405f"
           ],
           "x": 1568.218,
-          "y": 323.52369999999996,
+          "y": 313.27369999999996,
           "direction": "left"
         },
         "end": {
@@ -1865,32 +1842,6 @@
         "constraintName": "fk_customer_to_shipping_details",
         "visible": true,
         "id": "560fd3a3-3b9a-4e28-8c00-73c0db0ec56b"
-      },
-      {
-        "identification": false,
-        "relationshipType": "OneOnly",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "e30b2eb2-f954-4e41-917a-1b482bcf6b49",
-          "columnIds": [
-            "013cd0f2-3447-4ff4-99c7-3c50e68d836f"
-          ],
-          "x": 1695.9130399780274,
-          "y": 740.9455,
-          "direction": "top"
-        },
-        "end": {
-          "tableId": "2153badb-3269-424f-a911-a3c84a6966cd",
-          "columnIds": [
-            "e082e11b-9475-4017-89d6-d246bcdde22b"
-          ],
-          "x": 1835.6381240539552,
-          "y": 450.27369999999996,
-          "direction": "bottom"
-        },
-        "constraintName": "fk_shipping_details_to_order",
-        "visible": true,
-        "id": "b8956137-4193-4670-b519-f13fced91d52"
       }
     ]
   }

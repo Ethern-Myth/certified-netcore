@@ -20,19 +20,3 @@ public record CustomerCollectionResponse
     }
 }
 
-public record PartialCustomerCollectionResponse
-{
-    public Guid CPID { get; }
-    public Guid CustomerID { get; }
-    public PartialCustomerProductResponse PartialCustomerProductResponse { get; }
-    public PartialCustomerCollectionResponse() { }
-    public PartialCustomerCollectionResponse(
-        Guid cPID,
-        Guid customerID,
-        PartialCustomerProductResponse partialCustomerProductResponse)
-    {
-        CPID = cPID;
-        CustomerID = customerID;
-        PartialCustomerProductResponse = partialCustomerProductResponse;
-    }
-}

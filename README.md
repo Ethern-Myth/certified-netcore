@@ -6,7 +6,7 @@
 
 Take a look at the **ERD OR SQL** templates in the ERD folder and check how initially the database was structured.
 
-![ERD](ERD/store-ERD.png)
+![ERD](ERD/ERD-Store.png)
 
 **QUESTION**: Was the database translated to the RestAPI as in the templates? Find the answer in the actual endpoints.
 

@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,7 +22,8 @@ public class Product : BaseModel
     [ForeignKey(nameof(ProductType))]
     public int PDTypeID { get; set; }
     public virtual ProductType? ProductType { get; set; }
-    public string? ProductImgPath { get; set; }
+    public string? ImageName { get; set; }
+    public string? ImageUrl { get; set; }
 
     public Product(
         string name,
@@ -30,7 +32,8 @@ public class Product : BaseModel
         double price,
         bool inStock,
         int pDTypeID,
-        string? productImgPath)
+        string imageName,
+        string? imageUrl)
     {
         Name = name;
         Desc = desc;
@@ -38,6 +41,7 @@ public class Product : BaseModel
         Price = price;
         InStock = inStock;
         PDTypeID = pDTypeID;
-        ProductImgPath = productImgPath;
+        ImageName = imageName;
+        ImageUrl = imageUrl;
     }
 }
