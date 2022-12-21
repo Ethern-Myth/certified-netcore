@@ -24,7 +24,7 @@ public class CustomerCollectionController : ControllerBase
 
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetCustomerCollection(Guid id) =>
-            Ok(await Response(await service.getResponse(id, 0)));
+        Ok(await Response(await service.getResponse(id, 0)));
 
     [HttpPost]
     public async Task<IActionResult> SaveCustomerCollection(CustomerCollectionRequest request)
@@ -40,7 +40,7 @@ public class CustomerCollectionController : ControllerBase
             return Problem();
         return CreatedAtAction(
             actionName: nameof(GetCustomerCollection),
-            routeValues: new { id = response[0].CCID },
+            routeValues: new { id = response.CCID },
             value: response);
     }
 
@@ -72,8 +72,7 @@ public class CustomerCollectionController : ControllerBase
     private new static CustomerCollection Request(CustomerCollectionRequest request) =>
             new CustomerCollection(
             request.CPID,
-            request.CustomerID,
-            request.IsAvailable
+            request.CustomerID
         );
 
     [NonAction]
@@ -82,27 +81,35 @@ public class CustomerCollectionController : ControllerBase
         try
         {
             var results = new List<CustomerCollectionResponse>();
+            var customerProducts = new List<ProductQuantityResponse>();
             foreach (var item in ccollections)
             {
+                var customer = await service.getCustomer(item.CustomerID);
                 var customerProduct = await service.GetCustomerProduct(item.CPID);
+                foreach (var cProduct in customerProduct.Products)
+                {
+                    customerProducts.Add(new ProductQuantityResponse(
+                        cProduct.Quantity,
+                        cProduct.ProductTotal,
+                        cProduct.Product
+                    ));
+                }
                 results.Add(
-                new CustomerCollectionResponse(
-                    item.CCID,
-                    item.CPID,
-                    item.CustomerID,
-                    new PartialCustomerProductResponse(
-                         new CustomerResponse(
-                        customerProduct.Customer.Name,
-                        customerProduct.Customer.Surname,
-                        customerProduct.Customer.Email,
-                        customerProduct.Customer.Phone
-                        ),
-                        customerProduct.Products,
-                        customerProduct.Subtotal
-                    ),
-                    item.IsAvailable
-                )
-            );
+                    new CustomerCollectionResponse(
+                        item.CCID,
+                        item.CPID,
+                        item.CustomerID,
+                        new PartialCustomerProductResponse(
+                             new CustomerResponse(
+                                 customer.Name,
+                                 customer.Surname,
+                                 customer.Email,
+                                 customer.Phone),
+                            customerProducts,
+                            customerProduct.Subtotal
+                        )
+                    )
+                );
             }
             return results;
         }
@@ -113,35 +120,39 @@ public class CustomerCollectionController : ControllerBase
     }
 
     [NonAction]
-    private new async Task<List<CustomerCollectionResponse>> Response(CustomerCollection ccollection)
+    private new async Task<CustomerCollectionResponse> Response(CustomerCollection ccollection)
     {
         try
         {
-            var results = new List<CustomerCollectionResponse>();
+            var customerProducts = new List<ProductQuantityResponse>();
+            var customer = await service.getCustomer(ccollection.CustomerID);
             var customerProduct = await service.GetCustomerProduct(ccollection.CPID);
-            results.Add(
-                new CustomerCollectionResponse(
-                    ccollection.CCID,
-                    ccollection.CPID,
-                    ccollection.CustomerID,
-                    new PartialCustomerProductResponse(
-                         new CustomerResponse(
-                        customerProduct.Customer.Name,
-                        customerProduct.Customer.Surname,
-                        customerProduct.Customer.Email,
-                        customerProduct.Customer.Phone
-                        ),
-                        customerProduct.Products,
-                        customerProduct.Subtotal
-                    ),
-                    ccollection.IsAvailable
-                )
-            );
-            return results;
+            foreach (var cProduct in customerProduct.Products)
+            {
+                customerProducts.Add(new ProductQuantityResponse(
+                    cProduct.Quantity,
+                    cProduct.ProductTotal,
+                    cProduct.Product
+                ));
+            }
+            return new CustomerCollectionResponse(
+                        ccollection.CCID,
+                        ccollection.CPID,
+                        ccollection.CustomerID,
+                        new PartialCustomerProductResponse(
+                             new CustomerResponse(
+                                 customer.Name,
+                                 customer.Surname,
+                                 customer.Email,
+                                 customer.Phone),
+                            customerProducts,
+                            customerProduct.Subtotal
+                        )
+                    );
         }
         catch
         {
-            return new List<CustomerCollectionResponse>();
+            return new CustomerCollectionResponse();
         }
     }
 }

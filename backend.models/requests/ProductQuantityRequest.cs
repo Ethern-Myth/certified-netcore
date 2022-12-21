@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.models.requests;
 
-public struct CustomerCollectionRequest
+public struct ProductQuantityRequest
 {
     [Required]
-    public Guid CPID { get; set; }
+    public Guid ProductID { get; set; }
     [Required]
-    public Guid CustomerID { get; set; }
+    public int Quantity { get; set; }
 }

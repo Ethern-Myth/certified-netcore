@@ -28,54 +28,14 @@ public class CustomerProductService : ICustomerProductService
         .FirstOrDefaultAsync(p => p.ProductID == id);
 
     public Task<List<CustomerProduct>> getResponse() =>
-        (from cp in context.CustomerProducts
-         join c in context.Customers
-         on cp.CustomerID equals c.CustomerID
-         join r in context.Roles
-         on c.RoleID equals r.RoleID
-         where cp.CustomerID == c.CustomerID
-         && c.RoleID == r.RoleID
-         select new CustomerProduct(
-         cp.CPID,
-         cp.CustomerID,
-         new Customer(
-             cp.Customer.CustomerID,
-             cp.Customer.Name,
-             cp.Customer.Surname,
-             cp.Customer.Email,
-             cp.Customer.Phone
-         ),
-         cp.Products,
-         cp.Subtotal
-         )
-        )
+        context.CustomerProducts
         .AsNoTracking()
         .ToListAsync();
 
     public Task<List<CustomerProduct>> getResponse(Guid? id, int? intId) =>
-           (from cp in context.CustomerProducts
-            join c in context.Customers
-            on cp.CustomerID equals c.CustomerID
-            join r in context.Roles
-            on c.RoleID equals r.RoleID
-            where cp.CustomerID == c.CustomerID
-            && c.RoleID == r.RoleID
-            && cp.CPID == id
-            || cp.CustomerID == id
-            select new CustomerProduct(
-            cp.CPID,
-            cp.CustomerID,
-            new Customer(
-                cp.Customer.CustomerID,
-                cp.Customer.Name,
-                cp.Customer.Surname,
-                cp.Customer.Email,
-                cp.Customer.Phone
-            ),
-            cp.Products,
-            cp.Subtotal
-            )
-        )
+        context.CustomerProducts
+        .Where(cp => cp.CPID == id
+        || cp.CustomerID == id)
         .AsNoTracking()
         .ToListAsync();
 

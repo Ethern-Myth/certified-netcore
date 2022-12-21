@@ -87,29 +87,32 @@ public class OrderController : ControllerBase
     {
         try
         {
-            var customerCollection = await service.getCollection(order.CCID);
-            return new OrderResponse(
-                order.OrderID,
-                order.OrderDate,
-                order.OrderTotal,
-                order.IsPaid,
-                order.CCID,
-                new PartialCustomerCollectionResponse(
-                    customerCollection.CPID,
-                    customerCollection.CustomerID,
-                    new PartialCustomerProductResponse(
-                        new CustomerResponse(
-                            customerCollection.Customer.Name,
-                            customerCollection.Customer.Surname,
-                            customerCollection.Customer.Email,
-                            customerCollection.Customer.Phone
-                        ),
-                        customerCollection.CustomerProduct.Products,
-                        customerCollection.CustomerProduct.Subtotal
-                    ),
-                    customerCollection.IsAvailable
-                )
-            );
+            return new OrderResponse();
+            // var customerCollection = await service.getCollection(order.CCID);
+            // return new OrderResponse(
+            //     order.OrderID,
+            //     order.OrderDate,
+            //     order.OrderTotal,
+            //     order.IsPaid,
+            //     order.CCID,
+            //     new PartialCustomerCollectionResponse(
+            //         customerCollection.CPID,
+            //         customerCollection.CustomerID,
+            //         new PartialCustomerProductResponse(
+            //             new CustomerResponse(
+            //                 customerCollection.Customer.Name,
+            //                 customerCollection.Customer.Surname,
+            //                 customerCollection.Customer.Email,
+            //                 customerCollection.Customer.Phone
+            //             ),
+            //             new ProductQuantity(
+
+            //             )
+            //             customerCollection.CustomerProduct.Subtotal
+            //         ),
+            //         customerCollection.IsAvailable
+            //     )
+            // );
         }
         catch
         {
@@ -122,34 +125,35 @@ public class OrderController : ControllerBase
     {
         try
         {
-            var results = new List<OrderResponse>();
-            foreach (var order in orders)
-            {
-                var customerCollection = await service.getCollection(order.CCID);
-                results.Add(new OrderResponse(
-                order.OrderID,
-                order.OrderDate,
-                order.OrderTotal,
-                order.IsPaid,
-                order.CCID,
-                new PartialCustomerCollectionResponse(
-                    customerCollection.CPID,
-                    customerCollection.CustomerID,
-                    new PartialCustomerProductResponse(
-                        new CustomerResponse(
-                            customerCollection.Customer.Name,
-                            customerCollection.Customer.Surname,
-                            customerCollection.Customer.Email,
-                            customerCollection.Customer.Phone
-                        ),
-                        customerCollection.CustomerProduct.Products,
-                        customerCollection.CustomerProduct.Subtotal
-                    ),
-                    customerCollection.IsAvailable
-                )
-            ));
-            }
-            return results;
+            // var results = new List<OrderResponse>();
+            // foreach (var order in orders)
+            // {
+            //     var customerCollection = await service.getCollection(order.CCID);
+            //     results.Add(new OrderResponse(
+            //     order.OrderID,
+            //     order.OrderDate,
+            //     order.OrderTotal,
+            //     order.IsPaid,
+            //     order.CCID,
+            //     new PartialCustomerCollectionResponse(
+            //         customerCollection.CPID,
+            //         customerCollection.CustomerID,
+            //         new PartialCustomerProductResponse(
+            //             new CustomerResponse(
+            //                 customerCollection.Customer.Name,
+            //                 customerCollection.Customer.Surname,
+            //                 customerCollection.Customer.Email,
+            //                 customerCollection.Customer.Phone
+            //             ),
+            //             customerCollection.CustomerProduct.Products,
+            //             customerCollection.CustomerProduct.Subtotal
+            //         ),
+            //         customerCollection.IsAvailable
+            //     )
+            // ));
+            // }
+            // return results;
+            return new List<OrderResponse>();
         }
         catch
         {

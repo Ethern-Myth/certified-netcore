@@ -14,7 +14,7 @@ public class CustomerProduct : BaseModel
     public virtual Customer Customer { get; set; }
     [NotMapped]
     public virtual Product Product { get; set; }
-    public virtual ICollection<Product> Products { get; set; }
+    public virtual ICollection<ProductQuantity> Products { get; set; }
     [Required]
     public double Subtotal
     {
@@ -23,41 +23,18 @@ public class CustomerProduct : BaseModel
             double subtotal = 0.00;
             foreach (var item in Products)
             {
-                subtotal += item.Price;
+                subtotal += item.ProductTotal;
+
             }
             return subtotal;
         }
         set { }
     }
-    public CustomerProduct() { }
-
-    public CustomerProduct(
-        Guid cPID,
-        Guid customerID,
-        Customer customer,
-        ICollection<Product> products,
-        double subTotal)
-    {
-        CPID = cPID;
-        CustomerID = customerID;
-        Customer = customer;
-        Products = products;
-        Subtotal = subTotal;
-    }
     public CustomerProduct(
         Guid customerID,
-        ICollection<Product> products)
+        ICollection<ProductQuantity> products)
     {
         CustomerID = customerID;
         Products = products;
-    }
-
-    public CustomerProduct(
-        ICollection<Product> products,
-        double subTotal
-    )
-    {
-        Products = products;
-        Subtotal = subTotal;
     }
 }

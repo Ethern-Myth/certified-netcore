@@ -19,11 +19,11 @@ public class CustomerProductController : ControllerBase
 
     [HttpGet]
     public async Task<IActionResult> GetCustomerProducts() =>
-       Ok(Response(await service.getResponse()));
+       Ok(await Response(await service.getResponse()));
 
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetCustomerProduct(Guid id) =>
-            Ok(Response(await service.getResponse(id, 0)));
+            Ok(await Response(await service.getResponse(id, 0)));
 
     [HttpPost]
     public async Task<IActionResult> SaveCustomerProduct(CustomerProductRequest request)
@@ -70,16 +70,19 @@ public class CustomerProductController : ControllerBase
     [NonAction]
     private new async Task<CustomerProduct> Request(CustomerProductRequest request)
     {
-        var products = new List<Product>();
+        var productQuantity = new List<ProductQuantity>();
         foreach (var item in request.Products)
         {
-            var result = await this.service.getProduct(item);
-            products.Add(result);
+            var result = await this.service.getProduct(item.ProductID);
+            productQuantity.Add(new ProductQuantity(
+             item.Quantity,
+             result
+            ));
         }
-        return await Task.Run(() => new CustomerProduct(
+        return new CustomerProduct(
             request.CustomerID,
-            products
-        ));
+            productQuantity
+        );
     }
 
     [NonAction]
@@ -89,18 +92,27 @@ public class CustomerProductController : ControllerBase
         {
             var results = new List<CustomerProductResponse>();
             var customer = await service.getCustomer(customerProduct.CustomerID);
+            var products = new List<ProductQuantityResponse>();
+            foreach (var item in customerProduct.Products)
+            {
+                products.Add(new ProductQuantityResponse(
+                    item.Quantity,
+                    item.ProductTotal,
+                    item.Product
+                ));
+            }
             results.Add(new CustomerProductResponse(
-                 customerProduct.CPID,
-                 customerProduct.CustomerID,
-                 new CustomerResponse(
-                    customer.Name,
-                    customer.Surname,
-                    customer.Email,
-                    customer.Phone
-                 ),
-                 customerProduct.Products,
-                 customerProduct.Subtotal
-            ));
+             customerProduct.CPID,
+             customerProduct.CustomerID,
+             new CustomerResponse(
+                customer.Name,
+                customer.Surname,
+                customer.Email,
+                customer.Phone
+             ),
+            products,
+            customerProduct.Subtotal
+        ));
             return results;
         }
         catch
@@ -109,24 +121,34 @@ public class CustomerProductController : ControllerBase
         }
     }
     [NonAction]
-    private new List<CustomerProductResponse> Response(List<CustomerProduct> customerProducts)
+    private new async Task<List<CustomerProductResponse>> Response(List<CustomerProduct> customerProducts)
     {
         try
         {
             var results = new List<CustomerProductResponse>();
-            foreach (var item in customerProducts)
+            var products = new List<ProductQuantityResponse>();
+            foreach (var customerProduct in customerProducts)
             {
+                var customer = await service.getCustomer(customerProduct.CustomerID);
+                foreach (var item in customerProduct.Products)
+                {
+                    products.Add(new ProductQuantityResponse(
+                        item.Quantity,
+                        item.ProductTotal,
+                        item.Product
+                    ));
+                }
                 results.Add(new CustomerProductResponse(
-                 item.CPID,
-                 item.CustomerID,
+                 customerProduct.CPID,
+                 customerProduct.CustomerID,
                  new CustomerResponse(
-                    item.Customer.Name,
-                    item.Customer.Surname,
-                    item.Customer.Email,
-                    item.Customer.Phone
+                    customer.Name,
+                    customer.Surname,
+                    customer.Email,
+                    customer.Phone
                  ),
-                 item.Products,
-                 item.Subtotal
+                products,
+                customerProduct.Subtotal
             ));
             }
             return results;

@@ -3,6 +3,7 @@ using backend.models;
 using backend.models.models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Newtonsoft.Json;
 
 namespace backend.Data;
 
@@ -19,6 +20,9 @@ public class DataContext : DbContext
     public virtual DbSet<Order> Orders { get; set; }
     public virtual DbSet<Product> Products { get; set; }
     public virtual DbSet<ProductType> ProductTypes { get; set; }
+    public virtual DbSet<Country> Countries { get; set; }
+    public virtual DbSet<Shipping> Shippings { get; set; }
+    public virtual DbSet<Delivery> Deliveries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,12 +32,12 @@ public class DataContext : DbContext
         modelBuilder.Entity<CustomerProduct>()
         .Property(cp => cp.Products)
         .HasConversion(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-            v => JsonSerializer.Deserialize<List<Product>>(v, (JsonSerializerOptions)null),
-            new ValueComparer<ICollection<Product>>(
+            v => System.Text.Json.JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+            v => System.Text.Json.JsonSerializer.Deserialize<List<ProductQuantity>>(v, (JsonSerializerOptions)null),
+            new ValueComparer<ICollection<ProductQuantity>>(
                 (c1, c2) => c1.SequenceEqual(c2),
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                c => (ICollection<Product>)c.ToList()
+                c => (ICollection<ProductQuantity>)c.ToList()
             )
         );
 
@@ -53,7 +57,17 @@ public class DataContext : DbContext
         modelBuilder.Entity<Customer>()
         .HasData(new Customer(
             Guid.NewGuid(), "John", "Doe", "john@mail.com", "doe100", true, 1, "555-555-5555"
-        )
+        ));
+
+        dynamic countries;
+        using (StreamReader r = new StreamReader("Resources/JSON/countries.json"))
+        {
+            string json = r.ReadToEnd();
+            countries = JsonConvert.DeserializeObject<List<Country>>(json);
+        }
+        modelBuilder.Entity<Country>()
+        .HasData(
+            countries
         );
     }
 }

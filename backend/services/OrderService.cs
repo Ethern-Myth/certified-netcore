@@ -1,6 +1,5 @@
 using backend.Data;
 using backend.interfaces;
-using backend.models;
 using backend.models.models;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,33 +31,9 @@ public class OrderService : IOrderService
         .ToListAsync();
 
     public Task<CustomerCollection> getCollection(Guid id) =>
-    (from cc in context.CustomerCollections
-     join c in context.Customers
-     on cc.CustomerID equals c.CustomerID
-     join cp in context.CustomerProducts
-     on cc.CPID equals cp.CPID
-     where cc.CustomerID == c.CustomerID
-     && cc.CPID == cp.CPID
-     && cc.CCID == id
-     select new CustomerCollection(
-        cc.CCID,
-        cc.CustomerID,
-        new Customer(
-         cp.Customer.Name,
-         cp.Customer.Surname,
-         cp.Customer.Email,
-         cp.Customer.Phone
-        ),
-        cc.CPID,
-        new CustomerProduct(
-        cc.CustomerProduct.Products,
-        cc.CustomerProduct.Subtotal
-        ),
-        cc.IsAvailable
-     )
-        )
+        context.CustomerCollections
         .AsNoTracking()
-        .FirstAsync();
+        .FirstAsync(cc => cc.CCID == id);
 
     public async Task postRequest(Order t)
     {

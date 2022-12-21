@@ -5,7 +5,9 @@ using backend.Helper;
 using backend.interfaces;
 using backend.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -26,6 +28,9 @@ builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 builder.Services.AddScoped<ICustomerProductService, CustomerProductService>();
 builder.Services.AddScoped<ICustomerCollectionService, CustomerCollectionService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IShippingService, ShippingService>();
+builder.Services.AddScoped<IDeliveryService, DeliveryService>();
 // builder.Services.AddScoped<ICacheService, CacheService>();
 
 // Services
@@ -103,6 +108,14 @@ builder.Services.AddSwaggerGen(option =>
 // }
 // );
 
+// Upload Images
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.ValueLengthLimit = int.MaxValue;
+    o.MultipartBodyLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = int.MaxValue;
+});
+
 // Redirection
 if (!builder.Environment.IsDevelopment())
     builder.Services.AddHttpsRedirection(options =>
@@ -137,6 +150,15 @@ app.UseCors(options =>
 });
 
 app.UseExceptionHandler("/error");
+
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+    RequestPath = new PathString("/Resources")
+});
 
 app.UseAuthentication();
 

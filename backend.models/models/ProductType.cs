@@ -9,7 +9,6 @@ public class ProductType
     public int PDTypeID { get; set; }
     [Required]
     public string Category { get; set; }
-
     public ProductType() { }
 
     public ProductType(int pdTypeID, string category)

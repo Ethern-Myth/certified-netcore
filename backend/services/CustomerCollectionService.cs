@@ -22,88 +22,21 @@ public class CustomerCollectionService : ICustomerCollectionService
     }
 
     public Task<List<CustomerCollection>> getResponse() =>
-        (from cc in context.CustomerCollections
-         join c in context.Customers
-         on cc.CustomerID equals c.CustomerID
-         join cp in context.CustomerProducts
-         on cc.CPID equals cp.CPID
-         where cc.CustomerID == c.CustomerID
-         && cc.CPID == cp.CPID
-         select new CustomerCollection(
-            cc.CCID,
-            cc.CustomerID,
-            new Customer(
-             cp.Customer.Name,
-             cp.Customer.Surname,
-             cp.Customer.Email,
-             cp.Customer.Phone
-            ),
-            cc.CPID,
-            new CustomerProduct(
-            cc.CustomerProduct.Products,
-            cc.CustomerProduct.Subtotal
-            ),
-            cc.IsAvailable
-         )
-        )
+        context.CustomerCollections
         .AsNoTracking()
         .ToListAsync();
 
     public Task<List<CustomerCollection>> getResponse(Guid? id, int? intId) =>
-     (from cc in context.CustomerCollections
-      join c in context.Customers
-      on cc.CustomerID equals c.CustomerID
-      join cp in context.CustomerProducts
-      on cc.CPID equals cp.CPID
-      where cc.CustomerID == c.CustomerID
-      && cc.CPID == cp.CPID
-      && cc.CCID == id
-      || cc.CPID == id
-      || cc.CustomerID == id
-      select new CustomerCollection(
-         cc.CCID,
-         cc.CustomerID,
-         new Customer(
-          cp.Customer.Name,
-          cp.Customer.Surname,
-          cp.Customer.Email,
-          cp.Customer.Phone
-         ),
-         cc.CPID,
-         new CustomerProduct(
-         cc.CustomerProduct.Products,
-         cc.CustomerProduct.Subtotal
-         ),
-         cc.IsAvailable
-      )
-        )
+     context.CustomerCollections
+        .Where(cc => cc.CCID == id
+        || cc.CPID == id
+        || cc.CustomerID == id)
         .AsNoTracking()
         .ToListAsync();
 
     public Task<CustomerProduct> GetCustomerProduct(Guid id) =>
-   (from cp in context.CustomerProducts
-    join c in context.Customers
-    on cp.CustomerID equals c.CustomerID
-    join r in context.Roles
-    on c.RoleID equals r.RoleID
-    where cp.CustomerID == c.CustomerID
-    && c.RoleID == r.RoleID
-    && cp.CPID == id
-    || cp.CustomerID == id
-    select new CustomerProduct(
-    cp.CPID,
-    cp.CustomerID,
-    new Customer(
-        cp.Customer.CustomerID,
-        cp.Customer.Name,
-        cp.Customer.Surname,
-        cp.Customer.Email,
-        cp.Customer.Phone
-    ),
-    cp.Products,
-    cp.Subtotal
-    )
-        )
+        context.CustomerProducts
+        .Where(cp => cp.CPID == id)
         .AsNoTracking()
         .FirstAsync();
 
@@ -130,10 +63,6 @@ public class CustomerCollectionService : ICustomerCollectionService
         await context.SaveChangesAsync();
     }
 
-    public Task<CustomerCollection?> getSingleResponse(Guid? id, int? intId)
-    {
+    public Task<CustomerCollection?> getSingleResponse(Guid? id, int? intId) =>
         throw new NotImplementedException();
-    }
-
-
 }

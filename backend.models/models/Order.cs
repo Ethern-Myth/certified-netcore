@@ -16,11 +16,14 @@ public class Order : BaseModel
     public double OrderTotal { get; set; }
     [Required]
     public bool IsPaid { get; set; } = false;
+
     [ForeignKey(nameof(CustomerCollection))]
     public Guid CCID { get; set; }
     public virtual CustomerCollection CustomerCollection { get; set; }
-    public Order() { }
 
+    [ForeignKey(nameof(Shipping))]
+    public int ShippingID { get; set; }
+    public virtual Shipping Shipping { get; set; }
     public Order(
         Guid cCID,
         bool isPaid)

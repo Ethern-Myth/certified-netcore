@@ -16,35 +16,27 @@ public class CustomerCollection : BaseModel
     [ForeignKey(nameof(Customer))]
     public Guid CustomerID { get; set; }
     public virtual Customer Customer { get; set; }
-    [Required]
-    public bool IsAvailable { get; set; } = false;
-
-    public CustomerCollection() { }
 
     public CustomerCollection(
         Guid cCID,
         Guid customerID,
         Customer customer,
         Guid cPID,
-        CustomerProduct customerProduct,
-        bool isAvailable)
+        CustomerProduct customerProduct)
     {
         CCID = cCID;
         CustomerID = customerID;
         Customer = customer;
         CPID = cPID;
         CustomerProduct = customerProduct;
-        IsAvailable = isAvailable;
     }
 
     public CustomerCollection(
         Guid cPID,
-        Guid customerID,
-        bool isAvailable)
+        Guid customerID)
     {
         CustomerID = customerID;
         CPID = cPID;
-        IsAvailable = isAvailable;
     }
 
 }

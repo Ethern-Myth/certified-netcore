@@ -23,8 +23,6 @@ public class Customer : BaseModel
     public int RoleID { get; set; }
     public virtual Roles? Roles { get; set; }
     public string? Phone { get; set; }
-    public Customer() { }
-
     public Customer
        (
        Guid customerID,
@@ -45,7 +43,6 @@ public class Customer : BaseModel
         RoleID = roleID;
         Phone = phone;
     }
-
     public Customer
        (
        string name,
@@ -64,31 +61,4 @@ public class Customer : BaseModel
         RoleID = roleID;
         Phone = phone;
     }
-
-    public Customer(
-        Guid id,
-        string name,
-        string surname,
-        string email,
-        string? phone)
-    {
-        CustomerID = id;
-        Name = name;
-        Surname = surname;
-        Email = email;
-        Phone = phone;
-    }
-
-    public Customer(
-        string name,
-        string surname,
-        string email,
-        string? phone)
-    {
-        Name = name;
-        Surname = surname;
-        Email = email;
-        Phone = phone;
-    }
-
 }

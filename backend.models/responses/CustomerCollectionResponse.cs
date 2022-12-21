@@ -6,21 +6,17 @@ public record CustomerCollectionResponse
     public Guid CPID { get; }
     public Guid CustomerID { get; }
     public PartialCustomerProductResponse PartialCustomerProductResponse { get; }
-    public bool IsAvailable { get; }
-
     public CustomerCollectionResponse() { }
     public CustomerCollectionResponse(
         Guid cCID,
         Guid cPID,
         Guid customerID,
-        PartialCustomerProductResponse partialCustomerProductResponse,
-        bool isAvailable)
+        PartialCustomerProductResponse partialCustomerProductResponse)
     {
         CCID = cCID;
         CPID = cPID;
         CustomerID = customerID;
         PartialCustomerProductResponse = partialCustomerProductResponse;
-        IsAvailable = isAvailable;
     }
 }
 
@@ -29,17 +25,14 @@ public record PartialCustomerCollectionResponse
     public Guid CPID { get; }
     public Guid CustomerID { get; }
     public PartialCustomerProductResponse PartialCustomerProductResponse { get; }
-    public bool IsAvailable { get; }
     public PartialCustomerCollectionResponse() { }
     public PartialCustomerCollectionResponse(
         Guid cPID,
         Guid customerID,
-        PartialCustomerProductResponse partialCustomerProductResponse,
-        bool isAvailable)
+        PartialCustomerProductResponse partialCustomerProductResponse)
     {
         CPID = cPID;
         CustomerID = customerID;
         PartialCustomerProductResponse = partialCustomerProductResponse;
-        IsAvailable = isAvailable;
     }
 }

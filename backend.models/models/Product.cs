@@ -10,6 +10,9 @@ public class Product : BaseModel
     public Guid ProductID { get; set; }
     [Required]
     public string Name { get; set; }
+    public string? Desc { get; set; }
+    [Required]
+    public string Brand { get; set; }
     [Required]
     public double Price { get; set; } = 0.00;
     [Required]
@@ -18,33 +21,23 @@ public class Product : BaseModel
     [ForeignKey(nameof(ProductType))]
     public int PDTypeID { get; set; }
     public virtual ProductType? ProductType { get; set; }
-
-    public Product() { }
+    public string? ProductImgPath { get; set; }
 
     public Product(
-        Guid productID,
         string name,
+        string? desc,
+        string brand,
         double price,
         bool inStock,
-        ProductType? productType,
-        int pDTypeID)
-    {
-        ProductID = productID;
-        Name = name;
-        Price = price;
-        InStock = inStock;
-        ProductType = productType;
-        PDTypeID = pDTypeID;
-    }
-    public Product(
-        string name,
-        double price,
-        bool inStock,
-        int pDTypeID)
+        int pDTypeID,
+        string? productImgPath)
     {
         Name = name;
+        Desc = desc;
+        Brand = brand;
         Price = price;
         InStock = inStock;
         PDTypeID = pDTypeID;
+        ProductImgPath = productImgPath;
     }
 }
