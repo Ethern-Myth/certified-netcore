@@ -32,15 +32,12 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> SaveProduct([FromForm] ProductRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var product = await RequestProduct(request);
-            await service.postRequest(product);
-            await SaveImage(request.Image, product.ImageName);
-            response = await ServerResponse(product);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var product = await RequestProduct(request);
+        await service.postRequest(product);
+        await SaveImage(request.Image, product.ImageName);
+        response = await ServerResponse(product);
         return CreatedAtAction(
             actionName: nameof(GetProduct),
             routeValues: new { id = response.ProductID },
@@ -51,18 +48,15 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> UpdateProduct([FromForm] ProductRequest request, Guid id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var oldFile = await service.getSingleResponse(id, 0);
-            var product = await RequestProduct(request);
-            product.ProductID = id;
-            product.DateUpdated = DateTimeOffset.UtcNow;
-            await service.putRequest(product, id, 0);
-            await UpdateImage(request.Image, oldFile.ImageName, product.ImageName);
-            response = await ServerResponse(product);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var oldFile = await service.getSingleResponse(id, 0);
+        var product = await RequestProduct(request);
+        product.ProductID = id;
+        product.DateUpdated = DateTimeOffset.UtcNow;
+        await service.putRequest(product, id, 0);
+        await UpdateImage(request.Image, oldFile.ImageName, product.ImageName);
+        response = await ServerResponse(product);
         return Ok(response);
     }
 

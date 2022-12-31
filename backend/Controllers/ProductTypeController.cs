@@ -30,14 +30,11 @@ public class ProductTypeController : ControllerBase
     public async Task<IActionResult> SaveProductType(ProductTypeRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var productType = Request(request);
-            await service.postRequest(productType);
-            response = Response(productType);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var productType = Request(request);
+        await service.postRequest(productType);
+        response = Response(productType);
         return CreatedAtAction(
             actionName: nameof(GetProductType),
             routeValues: new { id = response.PDTypeID },
@@ -48,15 +45,12 @@ public class ProductTypeController : ControllerBase
     public async Task<IActionResult> UpdateProductType(ProductTypeRequest request, int id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var productType = Request(request);
-            productType.PDTypeID = id;
-            await service.putRequest(productType, guid, id);
-            response = Response(productType);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var productType = Request(request);
+        productType.PDTypeID = id;
+        await service.putRequest(productType, guid, id);
+        response = Response(productType);
         return Ok(response);
     }
 

@@ -2,8 +2,8 @@ using System.ComponentModel.DataAnnotations;
 namespace backend.models.requests;
 public struct OrderRequest
 {
-    [Required]
+    [Required(ErrorMessage = "CCID is required")]
     public Guid CCID { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Is paid is required")]
     public bool IsPaid { get; set; }
 }

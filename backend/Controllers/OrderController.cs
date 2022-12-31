@@ -29,22 +29,19 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> SaveOrder(OrderRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var order = Request(request);
+        var collection = await service.getCollection(request.CCID);
+        int count = 0;
+        foreach (var item in collection.CustomerProduct.Products)
         {
-            var order = Request(request);
-            var collection = await service.getCollection(request.CCID);
-            int count = 0;
-            foreach (var item in collection.CustomerProduct.Products)
-            {
-                count += item.Quantity;
-            }
-            order.ItemCount = count;
-            order.OrderTotal = collection.CustomerProduct.Subtotal;
-            await service.postRequest(order);
-            response = await Response(order);
+            count += item.Quantity;
         }
-        else
-            return Problem();
+        order.ItemCount = count;
+        order.OrderTotal = collection.CustomerProduct.Subtotal;
+        await service.postRequest(order);
+        response = await Response(order);
         return CreatedAtAction(
             actionName: nameof(GetOrder),
             routeValues: new { id = response.OrderID },
@@ -56,24 +53,21 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> UpdateOrder(OrderRequest request, Guid id)
     {
         dynamic response;
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var order = Request(request);
+        order.OrderID = id;
+        var collection = await this.service.getCollection(request.CCID);
+        int count = 0;
+        foreach (var item in collection.CustomerProduct.Products)
         {
-            var order = Request(request);
-            order.OrderID = id;
-            var collection = await this.service.getCollection(request.CCID);
-            int count = 0;
-            foreach (var item in collection.CustomerProduct.Products)
-            {
-                count += item.Quantity;
-            }
-            order.ItemCount = count;
-            order.OrderTotal = collection.CustomerProduct.Subtotal;
-            order.DateUpdated = DateTimeOffset.UtcNow;
-            await service.putRequest(order, id, 0);
-            response = await Response(order);
+            count += item.Quantity;
         }
-        else
-            return Problem();
+        order.ItemCount = count;
+        order.OrderTotal = collection.CustomerProduct.Subtotal;
+        order.DateUpdated = DateTimeOffset.UtcNow;
+        await service.putRequest(order, id, 0);
+        response = await Response(order);
         return Ok(response);
     }
 

@@ -3,19 +3,19 @@ using System.ComponentModel.DataAnnotations;
 namespace backend.models.requests;
 public struct CustomerRequest
 {
-    [Required]
+    [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Surname is required")]
     public string Surname { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Email address is required")]
     [EmailAddress]
     public string Email { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; }
     public string? Phone { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Role Id is required")]
     public int RoleID { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Status is required")]
     public bool Status { get; set; }
     public CustomerRequest() =>
         Status = true;

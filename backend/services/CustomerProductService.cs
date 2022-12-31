@@ -45,6 +45,11 @@ public class CustomerProductService : ICustomerProductService
         .Include(c => c.Roles)
         .FirstOrDefaultAsync(c => c.CustomerID == id);
 
+    public Task<CustomerProduct?> getSingleResponse(Guid? id, int? intId) =>
+        context.CustomerProducts
+        .AsNoTracking()
+        .FirstOrDefaultAsync(c => c.CPID == id);
+
     public async Task postRequest(CustomerProduct t)
     {
         context.ChangeTracker.Clear();
@@ -62,10 +67,7 @@ public class CustomerProductService : ICustomerProductService
         await context.SaveChangesAsync();
     }
 
-    public Task<CustomerProduct?> getSingleResponse(Guid? id, int? intId)
-    {
-        throw new NotImplementedException();
-    }
+
 
     public Task<Product> GetProduct(Guid id)
     {

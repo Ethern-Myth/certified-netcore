@@ -30,14 +30,11 @@ public class CustomerCollectionController : ControllerBase
     public async Task<IActionResult> SaveCustomerCollection(CustomerCollectionRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customerCollection = Request(request);
-            await service.postRequest(customerCollection);
-            response = await Response(customerCollection);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customerCollection = Request(request);
+        await service.postRequest(customerCollection);
+        response = await Response(customerCollection);
         return CreatedAtAction(
             actionName: nameof(GetCustomerCollection),
             routeValues: new { id = response.CCID },
@@ -48,16 +45,13 @@ public class CustomerCollectionController : ControllerBase
     public async Task<IActionResult> UpdateCustomerCollection(CustomerCollectionRequest request, Guid id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customerCollection = Request(request);
-            customerCollection.CCID = id;
-            customerCollection.DateUpdated = DateTimeOffset.UtcNow;
-            await service.putRequest(customerCollection, id, 0);
-            response = await Response(customerCollection);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customerCollection = Request(request);
+        customerCollection.CCID = id;
+        customerCollection.DateUpdated = DateTimeOffset.UtcNow;
+        await service.putRequest(customerCollection, id, 0);
+        response = await Response(customerCollection);
         return Ok(response);
     }
 

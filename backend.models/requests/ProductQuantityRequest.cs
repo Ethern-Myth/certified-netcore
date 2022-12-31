@@ -4,8 +4,8 @@ namespace backend.models.requests;
 
 public struct ProductQuantityRequest
 {
-    [Required]
+    [Required(ErrorMessage = "Product Id is required")]
     public Guid ProductID { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Quantity is required")]
     public int Quantity { get; set; }
 }

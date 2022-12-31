@@ -23,23 +23,20 @@ public class CustomerProductController : ControllerBase
 
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetCustomerProduct(Guid id) =>
-            Ok(await Response(await service.getResponse(id, 0)));
+            Ok(await Response(await service.getSingleResponse(id, 0)));
 
     [HttpPost]
     public async Task<IActionResult> SaveCustomerProduct(CustomerProductRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customerProduct = await Request(request);
-            await service.postRequest(customerProduct);
-            response = await Response(customerProduct);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customerProduct = await Request(request);
+        await service.postRequest(customerProduct);
+        response = await Response(customerProduct);
         return CreatedAtAction(
             actionName: nameof(GetCustomerProduct),
-            routeValues: new { id = response[0].CPID },
+            routeValues: new { id = response.CPID },
             value: response);
     }
 
@@ -47,16 +44,13 @@ public class CustomerProductController : ControllerBase
     public async Task<IActionResult> UpdateCustomerProduct(CustomerProductRequest request, Guid id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customerProduct = await Request(request);
-            customerProduct.CPID = id;
-            customerProduct.DateUpdated = DateTimeOffset.UtcNow;
-            await service.putRequest(customerProduct, id, 0);
-            response = await Response(customerProduct);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customerProduct = await Request(request);
+        customerProduct.CPID = id;
+        customerProduct.DateUpdated = DateTimeOffset.UtcNow;
+        await service.putRequest(customerProduct, id, 0);
+        response = await Response(customerProduct);
         return Ok(response);
     }
 
@@ -86,11 +80,10 @@ public class CustomerProductController : ControllerBase
     }
 
     [NonAction]
-    private new async Task<List<CustomerProductResponse>> Response(CustomerProduct customerProduct)
+    private new async Task<CustomerProductResponse> Response(CustomerProduct customerProduct)
     {
         try
         {
-            var results = new List<CustomerProductResponse>();
             var customer = await service.getCustomer(customerProduct.CustomerID);
             var products = new List<ProductQuantityResponse>();
             foreach (var item in customerProduct.Products)
@@ -101,7 +94,7 @@ public class CustomerProductController : ControllerBase
                     item.Product
                 ));
             }
-            results.Add(new CustomerProductResponse(
+            return new CustomerProductResponse(
              customerProduct.CPID,
              customerProduct.CustomerID,
              new CustomerResponse(
@@ -112,12 +105,11 @@ public class CustomerProductController : ControllerBase
              ),
             products,
             customerProduct.Subtotal
-        ));
-            return results;
+        );
         }
         catch
         {
-            return new List<CustomerProductResponse>();
+            return new CustomerProductResponse();
         }
     }
     [NonAction]

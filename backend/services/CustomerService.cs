@@ -2,7 +2,6 @@ using backend.Data;
 using backend.models;
 using backend.interfaces;
 using Microsoft.EntityFrameworkCore;
-using backend.models.models;
 
 namespace backend.services;
 public class CustomerService : ICustomerService
@@ -66,6 +65,5 @@ public class CustomerService : ICustomerService
     {
         throw new NotImplementedException();
     }
-
 
 }

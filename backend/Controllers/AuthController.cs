@@ -42,16 +42,13 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(CustomerRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customer = await Request(request);
-            bool isDuplicate = await service.IsDuplicate(customer.Email);
-            if (!isDuplicate)
-                await service.postRequest(customer);
-            response = await Response(customer);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customer = await Request(request);
+        bool isDuplicate = await service.IsDuplicate(customer.Email);
+        if (!isDuplicate)
+            await service.postRequest(customer);
+        response = await Response(customer);
         return Ok(response);
     }
 

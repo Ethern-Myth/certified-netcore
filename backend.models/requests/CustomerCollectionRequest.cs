@@ -4,8 +4,8 @@ namespace backend.models.requests;
 
 public struct CustomerCollectionRequest
 {
-    [Required]
+    [Required(ErrorMessage = "CPID is required")]
     public Guid CPID { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Customer Id is required")]
     public Guid CustomerID { get; set; }
 }

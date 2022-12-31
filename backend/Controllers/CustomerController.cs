@@ -30,16 +30,13 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> SaveCustomer(CustomerRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customer = await Request(request);
-            bool isDuplicate = await service.IsDuplicate(customer.Email);
-            if (!isDuplicate)
-                await service.postRequest(customer);
-            response = await Response(customer);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customer = await Request(request);
+        bool isDuplicate = await service.IsDuplicate(customer.Email);
+        if (!isDuplicate)
+            await service.postRequest(customer);
+        response = await Response(customer);
         return CreatedAtAction(
             actionName: nameof(GetCustomer),
             routeValues: new { id = response.CustomerID },
@@ -50,17 +47,13 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> UpdateCustomer(CustomerRequest request, Guid id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var customer = await Request(request);
-            customer.CustomerID = id;
-            customer.DateUpdated = DateTimeOffset.UtcNow;
-            await service.putRequest(customer, id, 0);
-            response = await Response(customer);
-
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var customer = await Request(request);
+        customer.CustomerID = id;
+        customer.DateUpdated = DateTimeOffset.UtcNow;
+        await service.putRequest(customer, id, 0);
+        response = await Response(customer);
         return Ok(response);
     }
 

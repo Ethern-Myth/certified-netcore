@@ -27,12 +27,11 @@ public class DeliveryController : ControllerBase
     public async Task<IActionResult> SaveDelivery(DeliveryRequest request)
     {
         var response = new Delivery();
-        if (ModelState.IsValid)
-        {
-            var order = Request(request);
-            await service.postRequest(order);
-            response = order;
-        }
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var order = Request(request);
+        await service.postRequest(order);
+        response = order;
         return Ok(response);
     }
 
@@ -40,12 +39,11 @@ public class DeliveryController : ControllerBase
     public async Task<IActionResult> UpdateDelivery(DeliveryRequest request)
     {
         var response = new Delivery();
-        if (ModelState.IsValid)
-        {
-            var order = Request(request);
-            await service.putRequest(order, order.OrderID, 0);
-            response = order;
-        }
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var order = Request(request);
+        await service.putRequest(order, order.OrderID, 0);
+        response = order;
         return Ok(response);
     }
 

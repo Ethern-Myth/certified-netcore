@@ -30,14 +30,11 @@ public class RolesController : ControllerBase
     public async Task<IActionResult> SaveRole(RoleRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var role = Request(request);
-            await service.postRequest(role);
-            response = Response(role);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var role = Request(request);
+        await service.postRequest(role);
+        response = Response(role);
         return CreatedAtAction(
             actionName: nameof(GetRole),
             routeValues: new { id = response.RoleID },
@@ -48,15 +45,12 @@ public class RolesController : ControllerBase
     public async Task<IActionResult> UpdateRole(RoleRequest request, int id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var role = Request(request);
-            role.RoleID = id;
-            await service.putRequest(role, guid, id);
-            response = Response(role);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var role = Request(request);
+        role.RoleID = id;
+        await service.putRequest(role, guid, id);
+        response = Response(role);
         return Ok(response);
     }
 

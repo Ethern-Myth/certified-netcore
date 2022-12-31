@@ -29,14 +29,11 @@ public class ShippingController : ControllerBase
     public async Task<IActionResult> SaveShippingAddress(ShippingRequest request)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var shipping = Request(request);
-            await service.postRequest(shipping);
-            response = await Response(shipping);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var shipping = Request(request);
+        await service.postRequest(shipping);
+        response = await Response(shipping);
         return CreatedAtAction(
             actionName: nameof(GetShipping),
             routeValues: new { id = response.ShippingID },
@@ -46,15 +43,12 @@ public class ShippingController : ControllerBase
     public async Task<IActionResult> UpdateShippingAddress(ShippingRequest request, int id)
     {
         dynamic response;
-        if (ModelState.IsValid)
-        {
-            var shipping = Request(request);
-            shipping.ShippingID = id;
-            await service.putRequest(shipping, guid, id);
-            response = await Response(shipping);
-        }
-        else
-            return Problem();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var shipping = Request(request);
+        shipping.ShippingID = id;
+        await service.putRequest(shipping, guid, id);
+        response = await Response(shipping);
         return CreatedAtAction(
             actionName: nameof(GetShipping),
             routeValues: new { id = response.ShippingID },
