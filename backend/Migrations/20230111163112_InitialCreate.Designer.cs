@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221221184959_InitialCreate")]
+    [Migration("20230111163112_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,9 +71,9 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            CustomerID = new Guid("b0a8a448-272a-4e92-9509-e43b963e9395"),
-                            DateAdded = new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3105), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3109), new TimeSpan(0, 0, 0, 0, 0)),
+                            CustomerID = new Guid("ef204d31-fd2c-48ba-a0be-06b13b60a493"),
+                            DateAdded = new DateTimeOffset(new DateTime(2023, 1, 11, 16, 31, 12, 248, DateTimeKind.Unspecified).AddTicks(763), new TimeSpan(0, 0, 0, 0, 0)),
+                            DateUpdated = new DateTimeOffset(new DateTime(2023, 1, 11, 16, 31, 12, 248, DateTimeKind.Unspecified).AddTicks(766), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "john@mail.com",
                             Name = "John",
                             Password = "doe100",
@@ -81,6 +81,45 @@ namespace backend.Migrations
                             RoleID = 1,
                             Status = true,
                             Surname = "Doe"
+                        });
+                });
+
+            modelBuilder.Entity("backend.models.models.Conversion", b =>
+                {
+                    b.Property<int>("ConversionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ConversionID"));
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ConversionID");
+
+                    b.ToTable("conversion");
+
+                    b.HasData(
+                        new
+                        {
+                            ConversionID = 1,
+                            Unit = "ml"
+                        },
+                        new
+                        {
+                            ConversionID = 2,
+                            Unit = "l"
+                        },
+                        new
+                        {
+                            ConversionID = 3,
+                            Unit = "g"
+                        },
+                        new
+                        {
+                            ConversionID = 4,
+                            Unit = "kg"
                         });
                 });
 
@@ -1427,6 +1466,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ConversionID")
+                        .HasColumnType("integer");
+
+                    b.Property<double?>("ConversionSize")
+                        .HasColumnType("double precision");
+
                     b.Property<DateTimeOffset?>("DateAdded")
                         .HasColumnType("timestamp with time zone");
 
@@ -1456,6 +1501,8 @@ namespace backend.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("ProductID");
+
+                    b.HasIndex("ConversionID");
 
                     b.HasIndex("PDTypeID");
 
@@ -1631,11 +1678,19 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.models.models.Product", b =>
                 {
+                    b.HasOne("backend.models.models.Conversion", "Conversion")
+                        .WithMany()
+                        .HasForeignKey("ConversionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("backend.models.models.ProductType", "ProductType")
                         .WithMany()
                         .HasForeignKey("PDTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Conversion");
 
                     b.Navigation("ProductType");
                 });

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Authorize(Roles = "Customer, Admin, Super")]
+[Authorize(Roles = "Admin, Customer")]
 [ApiController]
 [Route("api/[controller]")]
 public class CustomerController : ControllerBase
@@ -17,7 +17,7 @@ public class CustomerController : ControllerBase
     public CustomerController(ICustomerService service) =>
         this.service = service;
 
-    [Authorize(Roles = "Admin, Super")]
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetCustomers() =>
         Ok(await Response(await service.getResponse()));

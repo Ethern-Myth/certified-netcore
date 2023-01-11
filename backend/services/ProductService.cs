@@ -22,19 +22,25 @@ public class ProductService : IProductService
 
     public Task<List<Product>> getResponse() =>
         context.Products
-        .Where(p => p.PDTypeID == p.ProductType.PDTypeID)
+        .Where(p => p.PDTypeID == p.ProductType.PDTypeID
+        && p.ConversionID == p.Conversion.ConversionID)
         .Include(p => p.ProductType)
         .ToListAsync();
 
     public Task<Product?> getSingleResponse(Guid? id, int? intId) =>
         context.Products
-        .Where(p => p.PDTypeID == p.ProductType.PDTypeID)
+        .Where(p => p.PDTypeID == p.ProductType.PDTypeID
+        && p.ConversionID == p.Conversion.ConversionID)
         .Include(p => p.ProductType)
         .FirstOrDefaultAsync(p => p.ProductID == id);
 
     public Task<ProductType?> GetProductTypes(int id) =>
         context.ProductTypes
         .FirstOrDefaultAsync(pt => pt.PDTypeID == id);
+
+    public Task<Conversion?> GetConversion(int id) =>
+         context.UnitConversions
+        .FirstOrDefaultAsync(c => c.ConversionID == id);
 
     public async Task postRequest(Product t)
     {
@@ -55,5 +61,6 @@ public class ProductService : IProductService
 
     public Task<List<Product>> getResponse(Guid? id, int? intId) =>
         throw new NotImplementedException();
+
 
 }

@@ -15,5 +15,7 @@ public class ProductRequest
     public bool InStock { get; set; }
     [Required(ErrorMessage = "Product Type ID is required")]
     public int PDTypeID { get; set; }
+    public double? ConversionSize { get; set; }
+    public int ConversionID { get; set; }
     public IFormFile? Image { get; set; }
 }

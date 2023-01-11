@@ -9,10 +9,12 @@ public record ProductResponse
     public string Desc { get; }
     public string Brand { get; }
     public double Price { get; }
-    public bool InStock { get; set; }
-    public ProductType ProductType { get; set; }
-    public string ImageName { get; set; }
-    public string ImageUrl { get; set; }
+    public bool InStock { get; }
+    public ProductType ProductType { get; }
+    public double? ConversionSize { get; }
+    public Conversion Conversion { get; }
+    public string ImageName { get; }
+    public string ImageUrl { get; }
 
     public ProductResponse() { }
 
@@ -24,6 +26,8 @@ public record ProductResponse
         double price,
         bool inStock,
         ProductType productType,
+        double? conversionSize,
+        Conversion conversion,
         string imageName,
         string imageUrl)
     {
@@ -34,6 +38,8 @@ public record ProductResponse
         Price = price;
         InStock = inStock;
         ProductType = productType;
+        ConversionSize = conversionSize;
+        Conversion = conversion;
         ImageName = imageName;
         ImageUrl = imageUrl;
     }

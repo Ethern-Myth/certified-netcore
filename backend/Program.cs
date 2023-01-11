@@ -31,6 +31,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IShippingService, ShippingService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IConversionService, ConversionService>();
 // builder.Services.AddScoped<ICacheService, CacheService>();
 
 // Services

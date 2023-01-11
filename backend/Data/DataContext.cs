@@ -23,6 +23,7 @@ public class DataContext : DbContext
     public virtual DbSet<Country> Countries { get; set; }
     public virtual DbSet<Shipping> Shippings { get; set; }
     public virtual DbSet<Delivery> Deliveries { get; set; }
+    public virtual DbSet<Conversion> UnitConversions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -52,6 +53,14 @@ public class DataContext : DbContext
         .HasData(
             new ProductType(1, "Beverages"),
             new ProductType(2, "Grains")
+        );
+
+        modelBuilder.Entity<Conversion>()
+        .HasData(
+            new Conversion(1, "ml"),
+            new Conversion(2, "l"),
+            new Conversion(3, "g"),
+            new Conversion(4, "kg")
         );
 
         modelBuilder.Entity<Customer>()

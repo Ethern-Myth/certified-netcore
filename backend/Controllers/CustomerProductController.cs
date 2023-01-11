@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Authorize(Roles = "Customer, Admin, Super")]
+[Authorize(Roles = "Admin, Customer")]
 [ApiController]
 [Route("api/[controller]")]
 public class CustomerProductController : ControllerBase
@@ -23,7 +23,7 @@ public class CustomerProductController : ControllerBase
 
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetCustomerProduct(Guid id) =>
-            Ok(await Response(await service.getSingleResponse(id, 0)));
+        Ok(await Response(await service.getSingleResponse(id, 0)));
 
     [HttpPost]
     public async Task<IActionResult> SaveCustomerProduct(CustomerProductRequest request)

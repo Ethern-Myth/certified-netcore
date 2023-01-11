@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;
 
-[Authorize(Roles = "Customer, Admin, Super")]
+[Authorize(Roles = "Admin, Customer")]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
@@ -80,6 +80,8 @@ public class ProductController : ControllerBase
             request.Price,
             request.InStock,
             request.PDTypeID,
+            request.ConversionSize,
+            request.ConversionID,
             imageName,
             imageUrl
             ));
@@ -91,6 +93,7 @@ public class ProductController : ControllerBase
         try
         {
             var productType = await service.GetProductTypes(product.PDTypeID);
+            var conversion = await service.GetConversion(product.ConversionID);
             return new ProductResponse(
                 product.ProductID,
                 product.Name,
@@ -99,6 +102,8 @@ public class ProductController : ControllerBase
                 product.Price,
                 product.InStock,
                 productType,
+                product.ConversionSize,
+                conversion,
                 product.ImageName,
                 product.ImageUrl
             );
@@ -119,6 +124,7 @@ public class ProductController : ControllerBase
             foreach (var item in products)
             {
                 var productType = await service.GetProductTypes(item.PDTypeID);
+                var conversion = await service.GetConversion(item.ConversionID);
                 results.Add(
                     new ProductResponse(
                     item.ProductID,
@@ -130,6 +136,11 @@ public class ProductController : ControllerBase
                     new ProductType(
                         productType.PDTypeID,
                         productType.Category
+                    ),
+                    item.ConversionSize,
+                    new Conversion(
+                        conversion.ConversionID,
+                        conversion.Unit
                     ),
                     item.ImageName,
                     item.ImageUrl

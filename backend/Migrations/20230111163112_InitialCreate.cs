@@ -15,6 +15,19 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "conversion",
+                columns: table => new
+                {
+                    ConversionID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Unit = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_conversion", x => x.ConversionID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Countries",
                 columns: table => new
                 {
@@ -63,6 +76,8 @@ namespace backend.Migrations
                     Price = table.Column<double>(type: "double precision", nullable: false),
                     InStock = table.Column<bool>(type: "boolean", nullable: false),
                     PDTypeID = table.Column<int>(type: "integer", nullable: false),
+                    ConversionSize = table.Column<double>(type: "double precision", nullable: true),
+                    ConversionID = table.Column<int>(type: "integer", nullable: false),
                     ImageName = table.Column<string>(type: "text", nullable: true),
                     ImageUrl = table.Column<string>(type: "text", nullable: true),
                     DateAdded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -71,6 +86,12 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_product", x => x.ProductID);
+                    table.ForeignKey(
+                        name: "FK_product_conversion_ConversionID",
+                        column: x => x.ConversionID,
+                        principalTable: "conversion",
+                        principalColumn: "ConversionID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_product_product_type_PDTypeID",
                         column: x => x.PDTypeID,
@@ -479,6 +500,17 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "conversion",
+                columns: new[] { "ConversionID", "Unit" },
+                values: new object[,]
+                {
+                    { 1, "ml" },
+                    { 2, "l" },
+                    { 3, "g" },
+                    { 4, "kg" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "product_type",
                 columns: new[] { "PDTypeID", "Category" },
                 values: new object[,]
@@ -499,7 +531,7 @@ namespace backend.Migrations
             migrationBuilder.InsertData(
                 table: "customer",
                 columns: new[] { "CustomerID", "DateAdded", "DateUpdated", "Email", "Name", "Password", "Phone", "RoleID", "Status", "Surname" },
-                values: new object[] { new Guid("b0a8a448-272a-4e92-9509-e43b963e9395"), new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3105), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2022, 12, 21, 18, 49, 58, 666, DateTimeKind.Unspecified).AddTicks(3109), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
+                values: new object[] { new Guid("ef204d31-fd2c-48ba-a0be-06b13b60a493"), new DateTimeOffset(new DateTime(2023, 1, 11, 16, 31, 12, 248, DateTimeKind.Unspecified).AddTicks(763), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 1, 11, 16, 31, 12, 248, DateTimeKind.Unspecified).AddTicks(766), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_customer_RoleID",
@@ -525,6 +557,11 @@ namespace backend.Migrations
                 name: "IX_order_CCID",
                 table: "order",
                 column: "CCID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_ConversionID",
+                table: "product",
+                column: "ConversionID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_product_PDTypeID",
@@ -556,6 +593,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "order");
+
+            migrationBuilder.DropTable(
+                name: "conversion");
 
             migrationBuilder.DropTable(
                 name: "product_type");
