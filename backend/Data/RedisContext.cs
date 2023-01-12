@@ -8,9 +8,6 @@ public class RedisContext
 
     public string RedisURL
     {
-        get
-        {
-            return _configuration.GetConnectionString("RedisURL");
-        }
+        get => _configuration.GetConnectionString("RedisURL");
     }
 }
