@@ -15,7 +15,7 @@ public class ProductController : ControllerBase
     private readonly IProductService service;
     private string folderPath = Path.Combine("Resources", "Images");
 
-    public ProductController(IProductService service) =>
+    public ProductController(IProductService service)=>
         this.service = service;
 
     [AllowAnonymous]
@@ -72,7 +72,7 @@ public class ProductController : ControllerBase
     private new async Task<Product> RequestProduct(ProductRequest request)
     {
         var imageName = await ImagePath(request.Image);
-        var imageUrl = ImageUrl(imageName);
+        var imageUrl = await ImageUrl(request.Image);
         return await Task.Run(() => new Product(
             request.Name,
             request.Description,
@@ -158,6 +158,7 @@ public class ProductController : ControllerBase
     [NonAction]
     private async Task<string> ImagePath(IFormFile file)
     {
+
         string fileName = "";
         if (file.Length > 0)
         {
@@ -180,10 +181,10 @@ public class ProductController : ControllerBase
     }
 
     [NonAction]
-    private new string ImageUrl(string fileName)
+    private async Task<string> ImageUrl(IFormFile file)
     {
         var baseUrl = $"{Request.Scheme}://{Request.Host}/";
-        return Path.Combine(baseUrl, folderPath, fileName);
+        return Path.Combine(baseUrl, folderPath, file.FileName);
     }
 
     [NonAction]

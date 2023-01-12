@@ -22,9 +22,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Redis Caching
 // builder.Services.AddScoped<RedisContext>(_ => new RedisContext(builder.Configuration));
 
-//Github Context and Token
-// var gitHubSection = builder.Configuration.GetSection("GitHub");
-// builder.Services.Configure<GithubContext>(gitHubSection);
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IRolesService, RolesService>();
