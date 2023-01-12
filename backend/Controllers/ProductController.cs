@@ -82,7 +82,8 @@ public class ProductController : ControllerBase
             request.PDTypeID,
             request.ConversionSize,
             request.ConversionID,
-            imageName
+            imageName,
+            imageUrl
             ));
     }
 
@@ -93,7 +94,6 @@ public class ProductController : ControllerBase
         {
             var productType = await service.GetProductTypes(product.PDTypeID);
             var conversion = await service.GetConversion(product.ConversionID);
-            var imageUrl = ImageUrl(product.ImageName);
             return new ProductResponse(
                 product.ProductID,
                 product.Name,
@@ -105,7 +105,7 @@ public class ProductController : ControllerBase
                 product.ConversionSize,
                 conversion,
                 product.ImageName,
-                imageUrl
+                product.ImageUrl
             );
         }
         catch
@@ -125,7 +125,6 @@ public class ProductController : ControllerBase
             {
                 var productType = await service.GetProductTypes(item.PDTypeID);
                 var conversion = await service.GetConversion(item.ConversionID);
-                var imageUrl = ImageUrl(item.ImageName);
                 results.Add(
                     new ProductResponse(
                     item.ProductID,
@@ -144,7 +143,7 @@ public class ProductController : ControllerBase
                         conversion.Unit
                     ),
                     item.ImageName,
-                    imageUrl
+                    item.ImageUrl
                 )
             );
             }

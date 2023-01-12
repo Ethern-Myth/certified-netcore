@@ -27,7 +27,7 @@ public class Product : BaseModel
     public int ConversionID { get; set; }
     public virtual Conversion? Conversion { get; set; }
     public string? ImageName { get; set; }
-
+    public string? ImageUrl { get; set; }
     public Product(
         string name,
         string? desc,
@@ -37,7 +37,8 @@ public class Product : BaseModel
         int pDTypeID,
         double? conversionSize,
         int conversionID,
-        string imageName)
+        string imageName,
+        string? imageUrl)
     {
         Name = name;
         Desc = desc;
@@ -48,5 +49,6 @@ public class Product : BaseModel
         ConversionSize = conversionSize;
         ConversionID = conversionID;
         ImageName = imageName;
+        ImageUrl = imageUrl;
     }
 }

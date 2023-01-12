@@ -79,6 +79,7 @@ namespace backend.Migrations
                     ConversionSize = table.Column<double>(type: "double precision", nullable: true),
                     ConversionID = table.Column<int>(type: "integer", nullable: false),
                     ImageName = table.Column<string>(type: "text", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
                     DateAdded = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     DateUpdated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
@@ -530,7 +531,7 @@ namespace backend.Migrations
             migrationBuilder.InsertData(
                 table: "customer",
                 columns: new[] { "CustomerID", "DateAdded", "DateUpdated", "Email", "Name", "Password", "Phone", "RoleID", "Status", "Surname" },
-                values: new object[] { new Guid("c3b470c7-76b0-4092-82aa-a5081acd5d6b"), new DateTimeOffset(new DateTime(2023, 1, 12, 11, 16, 14, 222, DateTimeKind.Unspecified).AddTicks(877), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 1, 12, 11, 16, 14, 222, DateTimeKind.Unspecified).AddTicks(881), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
+                values: new object[] { new Guid("846f3d7b-61d3-4aa9-8067-a9ba732842e6"), new DateTimeOffset(new DateTime(2023, 1, 12, 12, 4, 47, 236, DateTimeKind.Unspecified).AddTicks(12), new TimeSpan(0, 0, 0, 0, 0)), new DateTimeOffset(new DateTime(2023, 1, 12, 12, 4, 47, 236, DateTimeKind.Unspecified).AddTicks(16), new TimeSpan(0, 0, 0, 0, 0)), "john@mail.com", "John", "doe100", "555-555-5555", 1, true, "Doe" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_customer_RoleID",

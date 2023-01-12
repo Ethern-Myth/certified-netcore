@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230112111614_InitialCreate")]
+    [Migration("20230112120447_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,9 +71,9 @@ namespace backend.Migrations
                     b.HasData(
                         new
                         {
-                            CustomerID = new Guid("c3b470c7-76b0-4092-82aa-a5081acd5d6b"),
-                            DateAdded = new DateTimeOffset(new DateTime(2023, 1, 12, 11, 16, 14, 222, DateTimeKind.Unspecified).AddTicks(877), new TimeSpan(0, 0, 0, 0, 0)),
-                            DateUpdated = new DateTimeOffset(new DateTime(2023, 1, 12, 11, 16, 14, 222, DateTimeKind.Unspecified).AddTicks(881), new TimeSpan(0, 0, 0, 0, 0)),
+                            CustomerID = new Guid("846f3d7b-61d3-4aa9-8067-a9ba732842e6"),
+                            DateAdded = new DateTimeOffset(new DateTime(2023, 1, 12, 12, 4, 47, 236, DateTimeKind.Unspecified).AddTicks(12), new TimeSpan(0, 0, 0, 0, 0)),
+                            DateUpdated = new DateTimeOffset(new DateTime(2023, 1, 12, 12, 4, 47, 236, DateTimeKind.Unspecified).AddTicks(16), new TimeSpan(0, 0, 0, 0, 0)),
                             Email = "john@mail.com",
                             Name = "John",
                             Password = "doe100",
@@ -1482,6 +1482,9 @@ namespace backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImageName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
                     b.Property<bool>("InStock")
