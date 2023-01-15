@@ -42,6 +42,18 @@ public class CustomerService : ICustomerService
         context.Customers
         .AnyAsync(c => c.Email == email);
 
+    public async Task UpdateByStatus(Guid id, bool status)
+    {
+        context.ChangeTracker.Clear();
+        if (context.Customers.Any(c => c.CustomerID == id))
+        {
+            var customer = context.Customers.SingleOrDefault(c => c.CustomerID == id);
+            customer.Status = status;
+            await Task.Run(() => context.Update(customer));
+        }
+        await context.SaveChangesAsync();
+    }
+
     public async Task postRequest(Customer t)
     {
         context.ChangeTracker.Clear();

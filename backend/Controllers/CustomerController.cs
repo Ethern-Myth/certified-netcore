@@ -57,6 +57,13 @@ public class CustomerController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPut("{id:Guid}/Status/{status:bool}")]
+    public async Task<IActionResult> UpdateByProductStock(Guid id, bool status)
+    {
+        await service.UpdateByStatus(id, status);
+        return await GetCustomer(id);
+    }
+
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveCustomer(Guid id)
     {

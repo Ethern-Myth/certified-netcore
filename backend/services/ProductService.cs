@@ -42,6 +42,18 @@ public class ProductService : IProductService
          context.UnitConversions
         .FirstOrDefaultAsync(c => c.ConversionID == id);
 
+    public async Task UpdateByStatus(Guid id, bool status)
+    {
+        context.ChangeTracker.Clear();
+        if (context.Products.Any(p => p.ProductID == id))
+        {
+            var product = context.Products.SingleOrDefault(p => p.ProductID == id);
+            product.InStock = status;
+            await Task.Run(() => context.Update(product));
+        }
+        await context.SaveChangesAsync();
+    }
+
     public async Task postRequest(Product t)
     {
         context.ChangeTracker.Clear();
@@ -61,6 +73,5 @@ public class ProductService : IProductService
 
     public Task<List<Product>> getResponse(Guid? id, int? intId) =>
         throw new NotImplementedException();
-
 
 }

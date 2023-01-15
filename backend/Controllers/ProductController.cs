@@ -60,6 +60,13 @@ public class ProductController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPut("{id:Guid}/Status/{status:bool}")]
+    public async Task<IActionResult> UpdateByProductStock(Guid id, bool status)
+    {
+        await service.UpdateByStatus(id, status);
+        return await GetProduct(id);
+    }
+
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveProduct(Guid id)
     {
