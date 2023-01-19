@@ -6,7 +6,7 @@ public class ProductRequest
     [Required(ErrorMessage = "Product name is required")]
     public string Name { get; set; }
     public string? Description { get; set; }
-    [Required(ErrorMessage = "Product name is required")]
+    [Required(ErrorMessage = "Brand is required")]
     public string Brand { get; set; }
     [Required(ErrorMessage = "Price is required")]
     [Range(0, int.MaxValue)]
