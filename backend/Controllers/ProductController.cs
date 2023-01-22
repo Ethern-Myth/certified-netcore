@@ -54,8 +54,14 @@ public class ProductController : ControllerBase
         var product = await RequestProduct(request);
         product.ProductID = id;
         product.DateUpdated = DateTimeOffset.UtcNow;
+        if (request.Image == null)
+        {
+            product.ImageName = oldFile.ImageName;
+            product.ImageUrl = oldFile.ImageUrl;
+        }
         await service.putRequest(product, id, 0);
-        await UpdateImage(request.Image, oldFile.ImageName, product.ImageName);
+        if (request.Image != null)
+            await UpdateImage(request.Image, oldFile.ImageName, product.ImageName);
         response = await ServerResponse(product);
         return Ok(response);
     }
@@ -78,8 +84,13 @@ public class ProductController : ControllerBase
     [NonAction]
     private new async Task<Product> RequestProduct(ProductRequest request)
     {
-        var imageName = await ImagePath(request.Image);
-        var imageUrl = await ImageUrl(imageName);
+        var imageName = "";
+        var imageUrl = "";
+        if (request.Image != null)
+        {
+            imageName = await ImagePath(request.Image);
+            imageUrl = await ImageUrl(imageName);
+        }
         return await Task.Run(() => new Product(
             request.Name,
             request.Description,
