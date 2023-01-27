@@ -41,6 +41,19 @@ public class ConversionController : ControllerBase
             value: response);
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateConversion(ConversionRequest request, int id)
+    {
+        dynamic response;
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        var conversion = Request(request);
+        conversion.ConversionID = id;
+        await service.putRequest(conversion, guid, id);
+        response = Response(conversion);
+        return Ok(response);
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> RemoveConversion(int id)
     {

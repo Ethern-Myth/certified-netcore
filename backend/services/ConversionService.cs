@@ -31,9 +31,16 @@ public class ConversionService : IConversionService
         await context.SaveChangesAsync();
     }
 
-    public Task putRequest(Conversion t, Guid? id, int? intId) =>
-        throw new NotImplementedException();
-
+    public async Task putRequest(Conversion t, Guid? id, int? intId) 
+    {
+        context.ChangeTracker.Clear();
+        if (context.UnitConversions.Any(c => c.ConversionID == intId))
+        {
+            await Task.Run(() => context.Update(t));
+        }
+        await context.SaveChangesAsync();
+    }
+    
     public Task<List<Conversion>> getResponse(Guid? id, int? intId) =>
         throw new NotImplementedException();
 }
